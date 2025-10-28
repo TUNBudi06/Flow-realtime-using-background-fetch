@@ -11,4 +11,9 @@ class IndexController extends Controller
     {
         return view('pages.Dashboard');
     }
+
+    public function login()
+    {
+        return view('pages.LoginView');
+    }
 }

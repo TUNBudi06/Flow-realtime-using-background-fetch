@@ -19,8 +19,52 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
 </head>
-<body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18]">
+<body class="bg-[#FDFDFC] relative dark:bg-[#0a0a0a] text-[#1b1b18]">
+    <livewire:notification />
+    <!-- Navbar -->
+    <nav class="bg-white fixed top-0 w-full z-2 dark:bg-[#18181b] border-b border-gray-200 dark:border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0">
+                    <a href="{{ route('home') }}" class="flex items-center">
+                        <span class="text-2xl font-bold text-gray-900 dark:text-white">ISEKI</span>
+                    </a>
+                </div>
 
-@livewireScriptConfig
+                <!-- Right Side Menu -->
+                <div class="flex items-center space-x-4">
+                    @auth
+                        <!-- Main Menu for Authenticated Users -->
+                        <div class="hidden md:flex items-center space-x-6">
+                            <x-navbar />
+                        </div>
+
+                        <livewire:auth.logout />
+                    @else
+                        <!-- Login Button for Guests -->
+                        @if(Route::has('login'))
+                            @if(!Route::is('login'))
+                                <a href="{{ route('login') }}" class="inline-flex items-center px-4 py-2 bg-gray-900 dark:bg-white border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-900 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-gray-100 transition">
+                                    Login
+                                </a>
+                            @else
+                                <a href="{{ route('home') }}" class="text-gray-700 px-2 py-3 rounded-xl data-[active=true]:bg-gray-300 dark:text-gray-300 dark:data-[active=true]:bg-gray-500 hover:text-gray-900 dark:hover:text-white transition" data-active="{{Route::is('home')?'true':'false'}}">
+                                    Dashboard
+                                </a>
+                            @endif
+                        @endif
+                    @endauth
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    @yield('content')
+    @livewireScriptConfig
+    <script src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
+    @stack('scripts')
+    @stack('scripts-def')
 </body>
 </html>
