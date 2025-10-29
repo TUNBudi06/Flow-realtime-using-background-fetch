@@ -41,19 +41,19 @@ new class extends Component {
     {
         Debugbar::info('QR Code Detected: ' . $data);
 
+//        data looks "6576;20251023;SF225GWZRE42S;100003;SF225S100003;SF225GWZRE42S100003"
+
         // Parse QR code data (assuming JSON format)
-        try {
-            $qrData = json_decode($data, true);
-            if ($qrData && is_array($qrData)) {
-                $this->no_tractor = $qrData['no_tractor'] ?? $qrData['noTractor'] ?? '';
-                $this->id_tractor = $qrData['id_tractor'] ?? $qrData['idTractor'] ?? '';
-            } else {
-                // If not JSON, use as id_tractor
-                $this->id_tractor = $data;
-            }
-        } catch (\Exception $e) {
-            $this->id_tractor = $data;
+        $parts = explode(';', $data);
+        if (count($parts) < 3) {
+            Debugbar::warning('Invalid QR code data format');
+            $this->dispatch('stopScanning');
+            $this->isScanning = false;
+            return;
         }
+
+        $this->no_tractor = trim($parts[0]);
+        $this->id_tractor = trim($parts[2]);
 
         $this->keterangan = $this->generateKeterangan();
 
@@ -318,7 +318,6 @@ new class extends Component {
 
             scanner = new QrScanner(videoElem, result => {
                 console.log('decoded qr code:', result);
-                // Extract data and dispatch to Livewire
                 const qrData = result?.data || result;
                 console.log('QR Data:', qrData);
                 Livewire.dispatch('detectQrCode', {data: qrData});
@@ -327,8 +326,6 @@ new class extends Component {
                 highlightCodeOutline: true,
             });
         };
-
-        // Scan QR code from uploaded file
         const scanFromFile = async (imageUrl) => {
             try {
                 console.log('Scanning QR from file:', imageUrl);
@@ -365,15 +362,12 @@ new class extends Component {
             }
         });
 
-        // Handle scanning from file
         Livewire.on('scanQrFromFile', (event) => {
             const url = event.url || event[0]?.url;
             if (url) {
                 scanFromFile(url);
             }
         });
-
-        // Cleanup on page unload
         window.addEventListener('beforeunload', () => {
             if (scanner) {
                 scanner.stop();
