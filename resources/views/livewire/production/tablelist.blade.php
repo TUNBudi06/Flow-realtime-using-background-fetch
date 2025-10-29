@@ -103,8 +103,9 @@ new class extends Component {
                     render: function(data, type, row) {
                         return `<button
                                     type="button"
-                                    onclick="deleteConfirm('${row.no_tractor}', '${row.id_tractor}')"
-                                    class="inline-flex items-center px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-md transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                                    class="btn-delete inline-flex items-center px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-md transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                                    data-no-tractor="${row.no_tractor}"
+                                    data-id-tractor="${row.id_tractor}">
                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                     </svg>
@@ -173,12 +174,23 @@ new class extends Component {
             }
         };
 
-        function deleteConfirm(noTractor, idTractor) {
-            if(confirm(`Apakah Anda yakin ingin menghapus data tractor ${noTractor}?`)) {
-                console.log('Delete tractor ' + idTractor);
-                // Uncomment untuk implement delete via Livewire:
-                // $wire.call('deleteTractor', idTractor);
-            }
+        // Event delegation untuk delete button (tetap aktif setelah data update)
+        function setupEventHandlers() {
+            // Remove existing handlers to prevent duplicates
+            $(document).off('click', '.btn-delete');
+
+            // Add event delegation for delete buttons
+            $(document).on('click', '.btn-delete', function(e) {
+                e.preventDefault();
+                const noTractor = $(this).data('no-tractor');
+                const idTractor = $(this).data('id-tractor');
+
+                if(confirm(`Apakah Anda yakin ingin menghapus data tractor ${noTractor}?`)) {
+                    console.log('Delete tractor ' + idTractor);
+                    // Uncomment untuk implement delete via Livewire:
+                    // $wire.call('deleteTractor', idTractor);
+                }
+            });
         }
 
         function mapRow(row) {
@@ -232,6 +244,9 @@ new class extends Component {
             console.log('jQuery loaded:', typeof $);
             console.log('DataTable available:', typeof $.fn.DataTable);
 
+            // Setup event handlers with delegation
+            setupEventHandlers();
+
             // Initialize DataTable setelah DOM ready
             initDataTable();
 
@@ -244,12 +259,13 @@ new class extends Component {
             // Auto refresh data setiap 60 detik (1 menit)
             setInterval(() => {
                 console.log('Refreshing data from server...');
+                $('#last_scanned').text(new Date().toLocaleTimeString());
                 $wire.call('refreshData').then(() => {
                     console.log('Data refreshed from server');
                 }).catch((error) => {
                     console.error('Error refreshing data:', error);
                 });
-            }, 4000); // 60000ms = 1 menit
+            }, 60000); // 60000ms = 1 menit
         });
     </script>
 @endscript

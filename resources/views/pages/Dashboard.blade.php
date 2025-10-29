@@ -7,7 +7,7 @@
 @section('content')
     <div class="pt-20 min-h-screen max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 class="text-2xl font-bold">Dashboard Production</h1>
-        <span class="text-sm text-gray-500">List of tractor Result</span>
+        <span class="text-sm text-gray-500">List of tractor (last refreshed: <span id="last_scanned"></span>)</span>
 
         <div class="mt-8 w-full">
             <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
