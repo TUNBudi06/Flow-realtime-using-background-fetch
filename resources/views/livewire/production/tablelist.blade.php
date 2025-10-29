@@ -18,7 +18,7 @@ new class extends Component {
                 'no_tractor' => 'TR-001',
                 'id_tractor' => 'TRC-2024-001',
                 'keterangan' => 'Tractor dalam kondisi baik, siap digunakan untuk produksi',
-                'foto' => 'https://via.placeholder.com/150',
+                'foto' => 'https://tse3.mm.bing.net/th/id/OIP.mw7ihkUQBfvsiBRQHph5zwHaHa?rs=1&pid=ImgDetMain&o=7&rm=3',
                 'nama_user' => 'John Doe',
                 'nik' => '1234567890'
             ],
@@ -26,7 +26,7 @@ new class extends Component {
                 'no_tractor' => 'TR-002',
                 'id_tractor' => 'TRC-2024-002',
                 'keterangan' => 'Sedang dalam maintenance rutin',
-                'foto' => 'https://via.placeholder.com/150',
+                'foto' => 'https://tractormanualz.com/wp-content/uploads/2019/02/LS-Tractor-H-140.jpg',
                 'nama_user' => 'Jane Smith',
                 'nik' => '0987654321'
             ],
@@ -34,14 +34,11 @@ new class extends Component {
                 'no_tractor' => 'TR-003',
                 'id_tractor' => 'TRC-2024-003',
                 'keterangan' => 'Baru selesai inspeksi, ready for operation',
-                'foto' => 'https://via.placeholder.com/150',
+                'foto' => 'https://tse1.mm.bing.net/th/id/OIP.RK_JEOypdJ8FD_6hVGZxHgAAAA?w=350&h=198&rs=1&pid=ImgDetMain&o=7&rm=3',
                 'nama_user' => 'Ahmad Yani',
                 'nik' => '1122334455'
             ],
         ];
-
-        // Untuk testing, tambahkan timestamp agar terlihat data berubah
-        $this->dataTractor[0]['keterangan'] .= ' (Updated: ' . now()->format('H:i:s') . ')';
     }
 
     // Method ini akan dipanggil dari JavaScript setiap 1 menit
@@ -84,7 +81,7 @@ new class extends Component {
                         return `<div class="flex items-center justify-center">
                                     <img src="${data}"
                                          alt="Foto Tractor ${row.no_tractor}"
-                                         class="w-32 h-32 object-cover rounded-lg border border-gray-200 hover:border-gray-300 transition-all cursor-pointer"
+                                         class="h-48 w-96 object-cover rounded-lg border border-gray-200 hover:border-gray-300 transition-all cursor-pointer"
                                          onclick="window.open(this.src, '_blank')">
                                 </div>`;
                     }

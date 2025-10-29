@@ -18,17 +18,24 @@
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
+
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
 </head>
-<body class="bg-[#FDFDFC] relative dark:bg-[#0a0a0a] text-[#1b1b18]">
+<body class="bg-[#FDFDFC] relative dark:bg-[#0a0a0a] text-[#1b1b18]" x-data="{
+    sidebarOpen: false
+}">
     <livewire:notification />
     <!-- Navbar -->
     <nav class="bg-white fixed top-0 w-full z-2 dark:bg-[#18181b] border-b border-gray-200 dark:border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
+
                 <!-- Logo -->
                 <div class="flex-shrink-0">
                     <a href="{{ route('home') }}" class="flex items-center">
-                        <span class="text-2xl font-bold text-gray-900 dark:text-white">ISEKI</span>
+                        <span class="text-2xl font-bold text-gray-900 dark:text-white">ISEKI Flow</span>
                     </a>
                 </div>
 

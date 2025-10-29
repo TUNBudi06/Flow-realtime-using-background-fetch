@@ -16,4 +16,9 @@ class IndexController extends Controller
     {
         return view('pages.LoginView');
     }
+
+    public function adminHome()
+    {
+        return view('pages.MenuDashboard');
+    }
 }
