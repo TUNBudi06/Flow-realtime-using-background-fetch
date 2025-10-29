@@ -274,7 +274,7 @@ new class extends Component {
                     <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-2">Informasi Pengguna</h4>
                     <div class="space-y-1 text-sm text-gray-600 dark:text-gray-400">
                         <p><strong>Nama:</strong> {{ $nama_user ?: 'Belum login' }}</p>
-                        <p><strong>NIK/Email:</strong> {{ $nik ?: 'N/A' }}</p>
+                        <p><strong>nik:</strong> {{ $nik ?: 'N/A' }}</p>
                     </div>
 
                     @if($keterangan)
