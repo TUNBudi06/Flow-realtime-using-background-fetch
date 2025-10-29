@@ -12,39 +12,63 @@ new class extends Component {
 
     public function loadData()
     {
-        // Sample data - replace with actual database query
-        $this->dataTractor = [
-            [
-                'no_tractor' => 'TR-001',
-                'id_tractor' => 'TRC-2024-001',
-                'keterangan' => 'Tractor dalam kondisi baik, siap digunakan untuk produksi',
-                'foto' => 'https://tse3.mm.bing.net/th/id/OIP.mw7ihkUQBfvsiBRQHph5zwHaHa?rs=1&pid=ImgDetMain&o=7&rm=3',
-                'nama_user' => 'John Doe',
-                'nik' => '1234567890'
-            ],
-            [
-                'no_tractor' => 'TR-002',
-                'id_tractor' => 'TRC-2024-002',
-                'keterangan' => 'Sedang dalam maintenance rutin',
-                'foto' => 'https://tractormanualz.com/wp-content/uploads/2019/02/LS-Tractor-H-140.jpg',
-                'nama_user' => 'Jane Smith',
-                'nik' => '0987654321'
-            ],
-            [
-                'no_tractor' => 'TR-003',
-                'id_tractor' => 'TRC-2024-003',
-                'keterangan' => 'Baru selesai inspeksi, ready for operation',
-                'foto' => 'https://tse1.mm.bing.net/th/id/OIP.RK_JEOypdJ8FD_6hVGZxHgAAAA?w=350&h=198&rs=1&pid=ImgDetMain&o=7&rm=3',
-                'nama_user' => 'Ahmad Yani',
-                'nik' => '1122334455'
-            ],
-        ];
+        // Load data from database and transform to match DataTable format
+        $tractors = \App\Models\TractorListModel::all();
+
+        // Transform data to match DataTable column names
+        $this->dataTractor = $tractors->map(function ($tractor) {
+            return [
+                'no_tractor' => $tractor->No,
+                'id_tractor' => $tractor->Model,
+                'keterangan' => $tractor->Keterangan,
+                'foto' => $tractor->image,
+                'nama_user' => $tractor->name,
+                'nik' => $tractor->nik,
+                'created_at' => $tractor->created_at,
+                'updated_at' => $tractor->updated_at,
+            ];
+        })->toArray();
     }
 
     // Method ini akan dipanggil dari JavaScript setiap 1 menit
     public function refreshData()
     {
         $this->loadData();
+    }
+
+    public function deleteTractor($tractorId)
+    {
+        try {
+            // Find and delete the tractor by ID (Model field)
+            $tractor = \App\Models\TractorListModel::where('Model', $tractorId)->first();
+
+            if ($tractor) {
+                $tractor->delete();
+                $this->loadData(); // Reload data after delete
+
+                // Dispatch success notification (optional - if you have toast/notification)
+                $this->dispatch('notify', [
+                    'type' => 'success',
+                    'message' => 'Tractor berhasil dihapus!'
+                ]);
+
+                return true;
+            }
+
+            $this->dispatch('notify', [
+                'type' => 'error',
+                'message' => 'Tractor tidak ditemukan!'
+            ]);
+
+            return false;
+        } catch (\Exception $e) {
+            $this->dispatch('notify', [
+                'type' => 'error',
+                'message' => 'Gagal menghapus tractor: ' . $e->getMessage()
+            ]);
+
+            return false;
+        }
     }
 
 }; ?>
@@ -183,20 +207,23 @@ new class extends Component {
                 const idTractor = $(this).data('id-tractor');
 
                 if(confirm(`Apakah Anda yakin ingin menghapus data tractor ${noTractor}?`)) {
-                    console.log('Delete tractor ' + idTractor);
-                    // Uncomment untuk implement delete via Livewire:
-                    // $wire.call('deleteTractor', idTractor);
+                    console.log('Deleting tractor ' + idTractor);
+                    $wire.call('deleteTractor', idTractor).then(() => {
+                        console.log('Tractor deleted successfully');
+                    }).catch((error) => {
+                        console.error('Error deleting tractor:', error);
+                    });
                 }
             });
         }
 
         function mapRow(row) {
             return {
-                no_tractor: row?.no_tractor ?? '',
-                id_tractor: row?.id_tractor ?? '',
-                keterangan: row?.keterangan ?? '',
-                foto: row?.foto ?? '',
-                nama_user: row?.nama_user ?? '',
+                no_tractor: row?.no_tractor ?? row?.No ?? '',
+                id_tractor: row?.id_tractor ?? row?.Model ?? '',
+                keterangan: row?.keterangan ?? row?.Keterangan ?? '',
+                foto: row?.foto ?? row?.image ?? '',
+                nama_user: row?.nama_user ?? row?.name ?? '',
                 nik: row?.nik ?? ''
             };
         }
