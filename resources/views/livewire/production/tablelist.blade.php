@@ -15,7 +15,7 @@ new class extends Component {
     {
         $tractors = \App\Models\TractorListModel::orderBy('created_at','desc')->get();
 
-        $this->dataTractor = $tractors->map(function ($tractor, $index) {
+        $this->dataTractor = $tractors->map(function ($tractor) {
             if($tractor->prod_type == 'mainline'){
                 $this->countTractor[0]++;
             } elseif($tractor->prod_type == 'delivery'){
@@ -25,7 +25,6 @@ new class extends Component {
             }
 
             return [
-                'row_index' => $index, // Add index to maintain order
                 'no_tractor' => $tractor->No,
                 'id_tractor' => $tractor->Model,
                 'keterangan' => $tractor->Keterangan,
@@ -109,29 +108,28 @@ new class extends Component {
         const option = {
             data: [],
             columns: [
-                {
-                    data: 'row_index',
-                    visible: false, // Hidden column for maintaining order
-                    searchable: false
-                },
+                // Column 0: No Tractor
                 {
                     data: 'no_tractor',
                     render: function(data, type, row) {
                         return `<span class="text-sm font-medium text-gray-900">${data}</span>`;
                     }
                 },
+                // Column 1: ID Tractor
                 {
                     data: 'id_tractor',
                     render: function(data, type, row) {
                         return `<span class="text-sm text-gray-700">${data}</span>`;
                     }
                 },
+                // Column 2: Keterangan
                 {
                     data: 'keterangan',
                     render: function(data, type, row) {
                         return `<div class="text-sm text-gray-700 max-w-xs">${data}</div>`;
                     }
                 },
+                // Column 3: Foto Tractor
                 {
                     data: 'foto',
                     render: function (data, type, row) {
@@ -153,6 +151,7 @@ new class extends Component {
                         `;
                     }
                 },
+                // Column 4: User Upload / NIK
                 {
                     data: null,
                     render: function(data, type, row) {
@@ -162,6 +161,7 @@ new class extends Component {
                                 </div>`;
                     }
                 },
+                // Column 5: Action
                 {
                     data: null,
                     render: function(data, type, row) {
@@ -182,32 +182,36 @@ new class extends Component {
             scrollX: true,
             pageLength: 25,
             lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Semua"]],
-            order: [[0, 'asc']],
+            order: [], // Keep array order from database (newest first)
             columnDefs: [
                 {
                     orderable: false,
-                    targets: [0, 4, 6]
+                    targets: [3, 5] // Disable sorting for Foto and Action columns
                 },
                 {
-                    width: '2%',
-                    targets: [1, 2]
+                    width: '10%',
+                    targets: 0 // No Tractor
                 },
                 {
                     width: '15%',
-                    targets: 3
+                    targets: 1 // ID Tractor
                 },
                 {
-                    width: '25%',
-                    targets: 4,
+                    width: '20%',
+                    targets: 2 // Keterangan
+                },
+                {
+                    width: '30%',
+                    targets: 3, // Foto Tractor
                     className: 'text-center'
                 },
                 {
-                    width: '5%',
-                    targets: 5
+                    width: '15%',
+                    targets: 4 // User Upload / NIK
                 },
                 {
-                    width: '5%',
-                    targets: 6,
+                    width: '10%',
+                    targets: 5, // Action
                     className: 'text-center'
                 }
             ],
