@@ -18,7 +18,7 @@ new class extends Component {
         request()->session()->invalidate();
         request()->session()->regenerateToken();
 
-        return $this->redirect(route('home'), navigate: true);
+        return $this->redirect(route('home'));
     }
 }; ?>
 

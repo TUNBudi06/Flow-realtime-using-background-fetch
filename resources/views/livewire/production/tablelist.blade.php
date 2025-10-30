@@ -15,7 +15,7 @@ new class extends Component {
     {
         $tractors = \App\Models\TractorListModel::orderBy('created_at','desc')->get();
 
-        $this->dataTractor = $tractors->map(function ($tractor) {
+        $this->dataTractor = $tractors->map(function ($tractor, $index) {
             if($tractor->prod_type == 'mainline'){
                 $this->countTractor[0]++;
             } elseif($tractor->prod_type == 'delivery'){
@@ -25,6 +25,7 @@ new class extends Component {
             }
 
             return [
+                'row_index' => $index, // Add index to maintain order
                 'no_tractor' => $tractor->No,
                 'id_tractor' => $tractor->Model,
                 'keterangan' => $tractor->Keterangan,
@@ -41,15 +42,11 @@ new class extends Component {
 
     public function refreshData()
     {
-        // Get tractors with alarm_status = true before updating
         $tractorsWithAlarm = \App\Models\TractorListModel::where('alarm_status', true)->get();
 
-        // Send notification for each tractor with alarm
         foreach ($tractorsWithAlarm as $tractor) {
-            // Get prod_type
             $prodType = $tractor->prod_type ?? 'unknown';
 
-            // Format prod_type display
             $prodTypeDisplay = match($prodType) {
                 'mainline' => 'Mainline',
                 'inspeksi' => 'Inspeksi',
@@ -62,12 +59,10 @@ new class extends Component {
                 'message' => "Tractor No {$tractor->No} telah discan dari {$prodTypeDisplay}"
             ]);
 
-            // Set alarm to false after notification
             $tractor->alarm_status = false;
             $tractor->save();
         }
 
-        // Reload data for display
         $this->loadData();
     }
 
@@ -114,6 +109,11 @@ new class extends Component {
         const option = {
             data: [],
             columns: [
+                {
+                    data: 'row_index',
+                    visible: false, // Hidden column for maintaining order
+                    searchable: false
+                },
                 {
                     data: 'no_tractor',
                     render: function(data, type, row) {
@@ -186,28 +186,28 @@ new class extends Component {
             columnDefs: [
                 {
                     orderable: false,
-                    targets: [3, 5] // Disable sorting for Foto and Action columns
+                    targets: [0, 4, 6]
                 },
                 {
                     width: '2%',
-                    targets: [0, 1]
+                    targets: [1, 2]
                 },
                 {
                     width: '15%',
-                    targets: 2
+                    targets: 3
                 },
                 {
                     width: '25%',
-                    targets: 3,
+                    targets: 4,
                     className: 'text-center'
                 },
                 {
                     width: '5%',
-                    targets: 4
+                    targets: 5
                 },
                 {
                     width: '5%',
-                    targets: 5,
+                    targets: 6,
                     className: 'text-center'
                 }
             ],

@@ -2,7 +2,6 @@
     'type' => 'submit',
     'color' => 'blue',
     'loadingText' => 'Loading...',
-    'wire:target' => null,
 ])
 
 @php
@@ -15,15 +14,31 @@
     ];
 
     $buttonClasses = $colorClasses[$color] ?? $colorClasses['blue'];
+
+    // Base classes that should not be overridden
+    $baseClasses = "inline-flex items-center justify-center gap-2 text-white font-medium rounded-md transition-colors duration-200 focus:ring-4 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed";
+
+    // Get custom classes from attributes
+    $customClasses = $attributes->get('class', '');
+
+    // If no custom width is specified, default to w-full
+    if (!str_contains($customClasses, 'w-') && !str_contains($customClasses, 'flex-')) {
+        $baseClasses .= ' w-full';
+    }
+
+    // If no custom padding is specified, use default
+    if (!str_contains($customClasses, 'px-') && !str_contains($customClasses, 'py-')) {
+        $baseClasses .= ' px-4 py-2';
+    }
+
+    // Merge all classes
+    $finalClasses = $baseClasses . ' ' . $buttonClasses;
 @endphp
 
 <button
     type="{{ $type }}"
-    {{ $attributes->merge(['class' => "w-full text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 focus:ring-4 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 {$buttonClasses}"]) }}
+    {{ $attributes->merge(['class' => $finalClasses]) }}
     wire:loading.attr="disabled"
-    @if($attributes->has('wire:click'))
-        wire:target="{{ $attributes->get('wire:click') }}"
-    @endif
 >
     <!-- Loading Spinner -->
     <svg wire:loading class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
