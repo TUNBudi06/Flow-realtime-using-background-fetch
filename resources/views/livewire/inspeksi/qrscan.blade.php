@@ -84,8 +84,8 @@ new class extends Component {
 
     public function generateKeterangan(): string
     {
-        // Auto-generate keterangan based on form data - for mainline assembly exit
-        return "Tractor No {$this->no_tractor} dengan kode {$this->id_tractor} telah keluar dari mainline";
+        // Auto-generate keterangan based on form data - for inspection
+        return "Tractor No {$this->no_tractor} dengan kode {$this->id_tractor} telah melewati proses inspeksi";
     }
 
     public function save()
@@ -106,12 +106,12 @@ new class extends Component {
             'name' => $this->nama_user,
             'nik' => $this->nik,
             'alarm_status' => true,
-            'prod_type' => 'mainline'
+            'prod_type' => 'inspeksi'
         ]);
 
         $this->dispatch('notify', [
             'type' => 'success',
-            'message' => 'Tractor data saved successfully!'
+            'message' => 'Data inspeksi tractor berhasil disimpan!'
         ]);
 
         // Reset form
@@ -122,7 +122,7 @@ new class extends Component {
 <div>
     <div class="max-w-4xl mx-auto p-6">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Tractor Registration</h2>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Inspeksi Tractor</h2>
 
             @if (session()->has('message'))
                 <div class="mb-4 p-4 bg-green-50 dark:bg-green-900 rounded-lg">
@@ -304,7 +304,7 @@ new class extends Component {
                         color="green"
                         loadingText="Menyimpan..."
                         class="px-6 py-3">
-                        Save Tractor Data
+                        Simpan Data Inspeksi
                     </x-button-loading>
                     <x-button-loading
                         wire:click="$refresh"

@@ -20,15 +20,15 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg">
                     <h3 class="text-lg font-medium text-blue-900 dark:text-blue-100">MainLine</h3>
-                    <p class="text-3xl font-bold text-blue-600 dark:text-blue-300 mt-2">125</p>
+                    <p id="mainline-count" class="text-3xl font-bold text-blue-600 dark:text-blue-300 mt-2">125</p>
                 </div>
                 <div class="bg-green-50 dark:bg-green-900 p-4 rounded-lg">
                     <h3 class="text-lg font-medium text-green-900 dark:text-green-100">Inspection</h3>
-                    <p class="text-3xl font-bold text-green-600 dark:text-green-300 mt-2">98</p>
+                    <p id="inspeksi-count" class="text-3xl font-bold text-green-600 dark:text-green-300 mt-2">98</p>
                 </div>
                 <div class="bg-yellow-50 dark:bg-yellow-900 p-4 rounded-lg">
                     <h3 class="text-lg font-medium text-yellow-900 dark:text-yellow-100">Delivery</h3>
-                    <p class="text-3xl font-bold text-yellow-600 dark:text-yellow-300 mt-2">27</p>
+                    <p id="delivery-count" class="text-3xl font-bold text-yellow-600 dark:text-yellow-300 mt-2">27</p>
                 </div>
             </div>
         </div>

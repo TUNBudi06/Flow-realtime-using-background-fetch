@@ -15,5 +15,7 @@ class TractorListModel extends Model
         'image',
         'name',
         'nik',
+        'alarm_status',
+        'prod_type',
     ];
 }

@@ -11,7 +11,7 @@
         <ul class="space-y-2 font-medium flex-1">
             <!-- Dashboard -->
             <li>
-                <a href="{{ route('home') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group data-[active=true]:bg-blue-100 data-[active=true]:dark:bg-blue-900" data-active="{{Route::is('admin.home')?'true':'false'}}">
+                <a href="{{ route('admin.home') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group data-[active=true]:bg-blue-100 data-[active=true]:dark:bg-blue-900" data-active="{{Route::is('admin.home')?'true':'false'}}">
                     <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white data-[active=true]:bg-blue-100 data-[active=true]:dark:bg-blue-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16Zm0-13a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm2 10h-4v-1a2 2 0 0 1 4 0v1Zm1-4h-6v-1a3 3 0 0 1 6 0v1Z"/>
                     </svg>
@@ -31,7 +31,7 @@
 
             <!-- Inspection -->
             <li>
-                <a href="{{ route('inspection') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group data-[active=true]:bg-blue-100 data-[active=true]:dark:bg-blue-900">
+                <a href="{{ route('inspection') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group data-[active=true]:bg-blue-100 data-[active=true]:dark:bg-blue-900" data-active="{{Route::is('inspection')?'true':'false'}}">
                     <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white data-[active=true]:bg-blue-100 data-[active=true]:dark:bg-blue-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M18 5h-.7c.229-.467.349-.98.351-1.5a3.5 3.5 0 0 0-3.5-3.5c-1.717 0-3.215 1.2-4.331 2.481C8.4.842 6.949 0 5.5 0A3.5 3.5 0 0 0 2 3.5c.003.52.123 1.033.351 1.5H2a2 2 0 0 0-2 2v3a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V7a2 2 0 0 0-2-2ZM8.058 5H5.5a1.5 1.5 0 0 1 0-3c.9 0 2 .754 3.092 2.122-.219.337-.392.635-.534.878Zm6.1 0h-3.742c.933-1.368 2.371-3 3.739-3a1.5 1.5 0 0 1 0 3h.003ZM11 13H9v7h2v-7Zm-4 0H2v5a2 2 0 0 0 2 2h3v-7Zm6 0v7h3a2 2 0 0 0 2-2v-5h-5Z"/>
                     </svg>
@@ -41,7 +41,7 @@
 
             <!-- Delivery -->
             <li>
-                <a href="{{ route('delivery') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group data-[active=true]:bg-blue-100 data-[active=true]:dark:bg-blue-900">
+                <a href="{{ route('delivery') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group data-[active=true]:bg-blue-100 data-[active=true]:dark:bg-blue-900" data-active="{{Route::is('delivery')?'true':'false'}}">
                     <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white data-[active=true]:bg-blue-100 data-[active=true]:dark:bg-blue-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
                     </svg>

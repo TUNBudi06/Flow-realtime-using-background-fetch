@@ -4,6 +4,7 @@ use Livewire\Volt\Component;
 
 new class extends Component {
     public $dataTractor = null;
+    public $countTractor = [0,0,0];
 
     public function mount()
     {
@@ -12,11 +13,17 @@ new class extends Component {
 
     public function loadData()
     {
-        // Load data from database and transform to match DataTable format
-        $tractors = \App\Models\TractorListModel::all();
+        $tractors = \App\Models\TractorListModel::orderBy('created_at','desc')->get();
 
-        // Transform data to match DataTable column names
         $this->dataTractor = $tractors->map(function ($tractor) {
+            if($tractor->prod_type == 'mainline'){
+                $this->countTractor[0]++;
+            } elseif($tractor->prod_type == 'delivery'){
+                $this->countTractor[1]++;
+            } elseif($tractor->prod_type == 'inspeksi'){
+                $this->countTractor[2]++;
+            }
+
             return [
                 'no_tractor' => $tractor->No,
                 'id_tractor' => $tractor->Model,
@@ -24,29 +31,55 @@ new class extends Component {
                 'foto' => $tractor->image,
                 'nama_user' => $tractor->name,
                 'nik' => $tractor->nik,
+                'alarm' => $tractor->alarm_status,
+                'prod_type' => $tractor->prod_type,
                 'created_at' => $tractor->created_at,
                 'updated_at' => $tractor->updated_at,
             ];
         })->toArray();
     }
 
-    // Method ini akan dipanggil dari JavaScript setiap 1 menit
     public function refreshData()
     {
+        // Get tractors with alarm_status = true before updating
+        $tractorsWithAlarm = \App\Models\TractorListModel::where('alarm_status', true)->get();
+
+        // Send notification for each tractor with alarm
+        foreach ($tractorsWithAlarm as $tractor) {
+            // Get prod_type
+            $prodType = $tractor->prod_type ?? 'unknown';
+
+            // Format prod_type display
+            $prodTypeDisplay = match($prodType) {
+                'mainline' => 'Mainline',
+                'inspeksi' => 'Inspeksi',
+                'delivery' => 'Delivery',
+                default => ucfirst($prodType)
+            };
+
+            $this->dispatch('notify', [
+                'type' => 'success',
+                'message' => "Tractor No {$tractor->No} telah discan dari {$prodTypeDisplay}"
+            ]);
+
+            // Set alarm to false after notification
+            $tractor->alarm_status = false;
+            $tractor->save();
+        }
+
+        // Reload data for display
         $this->loadData();
     }
 
     public function deleteTractor($tractorId)
     {
         try {
-            // Find and delete the tractor by ID (Model field)
             $tractor = \App\Models\TractorListModel::where('Model', $tractorId)->first();
 
             if ($tractor) {
                 $tractor->delete();
-                $this->loadData(); // Reload data after delete
+                $this->loadData();
 
-                // Dispatch success notification (optional - if you have toast/notification)
                 $this->dispatch('notify', [
                     'type' => 'success',
                     'message' => 'Tractor berhasil dihapus!'
@@ -101,13 +134,23 @@ new class extends Component {
                 },
                 {
                     data: 'foto',
-                    render: function(data, type, row) {
-                        return `<div class="flex items-center justify-center">
-                                    <img src="${data}"
-                                         alt="Foto Tractor ${row.no_tractor}"
-                                         class="h-48 w-96 object-cover rounded-lg border border-gray-200 hover:border-gray-300 transition-all cursor-pointer"
-                                         onclick="window.open(this.src, '_blank')">
-                                </div>`;
+                    render: function (data, type, row) {
+                        if (typeof data === 'string' && data.includes('http')) {
+                            // If already a full URL
+                            data = data;
+                        } else {
+                            // Prepend Laravel storage URL (ensure trailing slash)
+                            data = `{{ asset('storage') }}/${data}`;
+                        }
+
+                        return `
+                            <div class="flex items-center justify-center">
+                                <img src="${data}"
+                                     alt="Foto Tractor ${row.no_tractor || ''}"
+                                     class="h-48 w-96 object-cover rounded-lg border border-gray-200 hover:border-gray-300 transition-all cursor-pointer"
+                                     onclick="window.open(this.src, '_blank')">
+                            </div>
+                        `;
                     }
                 },
                 {
@@ -146,24 +189,24 @@ new class extends Component {
                     targets: [3, 5] // Disable sorting for Foto and Action columns
                 },
                 {
-                    width: '8%',
+                    width: '2%',
                     targets: [0, 1]
                 },
                 {
-                    width: '25%',
+                    width: '15%',
                     targets: 2
                 },
                 {
-                    width: '15%',
+                    width: '25%',
                     targets: 3,
                     className: 'text-center'
                 },
                 {
-                    width: '15%',
+                    width: '5%',
                     targets: 4
                 },
                 {
-                    width: '10%',
+                    width: '5%',
                     targets: 5,
                     className: 'text-center'
                 }
@@ -267,6 +310,10 @@ new class extends Component {
         $(document).ready(function () {
             console.log('jQuery loaded:', typeof $);
             console.log('DataTable available:', typeof $.fn.DataTable);
+
+            $('#mainline-count').text($wire.get('countTractor')[0]);
+            $('#delivery-count').text($wire.get('countTractor')[1]);
+            $('#inspeksi-count').text($wire.get('countTractor')[2]);
 
             // Setup event handlers with delegation
             setupEventHandlers();

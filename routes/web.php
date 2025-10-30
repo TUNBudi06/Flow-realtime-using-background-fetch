@@ -7,7 +7,7 @@ Route::get('/',[IndexController::class,'index'])->name('home');
 Route::get('/login',[IndexController::class,'login'])->name('login');
 
 
-Route::prefix('admin')->group(function(){
+Route::middleware(['auth'])->prefix('admin')->group(function(){
     Route::get('/',[IndexController::class,'adminHome'])->name('admin.home');
     // MainLine
     Route::get('/mainline', function() {
