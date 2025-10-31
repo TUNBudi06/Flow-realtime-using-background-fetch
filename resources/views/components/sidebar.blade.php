@@ -1,10 +1,10 @@
 <div x-data="{ sidebarOpen: false }">
-<aside id="default-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform" :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full sm:translate-x-0'" aria-label="Sidebar">
-    <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800 flex flex-col">
+<aside id="default-sidebar" class=" fixed top-0 left-0 z-40 w-64 h-screen transition-transform" :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full sm:translate-x-0'" aria-label="Sidebar">
+    <div class="h-full px-3 py-4 overflow-y-auto bg-radial-[at_50%_75%] from-[#D30C7B] to-[#DBB4AD] flex flex-col">
         <!-- Logo/Brand Section -->
         <div class="mb-6 px-2">
-            <h2 class="text-xl font-bold text-gray-800 dark:text-white">ISEKI Flow</h2>
-            <p class="text-xs text-gray-500 dark:text-gray-400">Production Management</p>
+            <h2 class="text-xl font-bold text-white dark:text-white">ISEKI Flow</h2>
+            <p class="text-xs text-gray-100 dark:text-gray-400">Production Management</p>
         </div>
 
         <!-- Main Menu -->

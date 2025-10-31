@@ -23,12 +23,12 @@
         [x-cloak] { display: none !important; }
     </style>
 </head>
-<body class="bg-[#FDFDFC] relative dark:bg-[#0a0a0a] text-[#1b1b18]" x-data="{
+<body class="bg-[#FFE3DC] relative dark:bg-[#3A2D32] text-[#3A2D32]" x-data="{
     sidebarOpen: false
 }">
     <livewire:notification />
     <!-- Navbar -->
-    <nav class="bg-white fixed top-0 w-full z-2 dark:bg-[#18181b] border-b border-gray-200 dark:border-gray-800">
+    <nav class="bg-[#DBB4AD] fixed top-0 w-full z-2 dark:bg-[#18181b] border-b border-gray-200 dark:border-gray-800">
         <div class="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
 
