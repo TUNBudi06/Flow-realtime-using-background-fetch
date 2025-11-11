@@ -13,9 +13,12 @@ new class extends Component {
 
     public function loadData()
     {
+        // Reset counter before counting
+        $this->countTractor = [0,0,0];
+
         $tractors = \App\Models\TractorListModel::orderBy('created_at','desc')->get();
 
-        $this->dataTractor = $tractors->map(function ($tractor) {
+        $this->dataTractor = $tractors->map(function ($tractor, $index) {
             if($tractor->prod_type == 'mainline'){
                 $this->countTractor[0]++;
             } elseif($tractor->prod_type == 'delivery'){
@@ -33,10 +36,11 @@ new class extends Component {
                 'nik' => $tractor->nik,
                 'alarm' => $tractor->alarm_status,
                 'prod_type' => $tractor->prod_type,
-                'created_at' => $tractor->created_at,
-                'updated_at' => $tractor->updated_at,
+                'created_at' => $tractor->created_at->format('Y-m-d H:i:s'),
+                'updated_at' => $tractor->updated_at->format('Y-m-d H:i:s'),
+                'sort_order' => $index, // Preserve array order
             ];
-        })->toArray();
+        })->values()->toArray(); // Use values() to reset array keys
     }
 
     public function refreshData()
@@ -112,21 +116,21 @@ new class extends Component {
                 {
                     data: 'no_tractor',
                     render: function(data, type, row) {
-                        return `<span class="text-sm font-medium text-gray-900">${data}</span>`;
+                        return `<span class="text-sm font-semibold text-[#1A5E63] dark:text-gray-100">${data}</span>`;
                     }
                 },
                 // Column 1: ID Tractor
                 {
                     data: 'id_tractor',
                     render: function(data, type, row) {
-                        return `<span class="text-sm text-gray-700">${data}</span>`;
+                        return `<span class="text-sm font-medium text-gray-800 dark:text-gray-200">${data}</span>`;
                     }
                 },
                 // Column 2: Keterangan
                 {
                     data: 'keterangan',
                     render: function(data, type, row) {
-                        return `<div class="text-sm text-gray-700 max-w-xs">${data}</div>`;
+                        return `<div class="text-sm text-gray-700 dark:text-gray-300 max-w-xs">${data}</div>`;
                     }
                 },
                 // Column 3: Foto Tractor
@@ -145,7 +149,7 @@ new class extends Component {
                             <div class="flex items-center justify-center">
                                 <img src="${data}"
                                      alt="Foto Tractor ${row.no_tractor || ''}"
-                                     class="h-48 w-96 object-cover rounded-lg border border-gray-200 hover:border-gray-300 transition-all cursor-pointer"
+                                     class="h-48 w-96 object-cover rounded-lg border-2 border-[#ADC698] dark:border-gray-600 hover:border-[#1A5E63] dark:hover:border-gray-400 transition-all cursor-pointer shadow-md"
                                      onclick="window.open(this.src, '_blank')">
                             </div>
                         `;
@@ -156,8 +160,8 @@ new class extends Component {
                     data: null,
                     render: function(data, type, row) {
                         return `<div class="text-sm">
-                                    <div class="font-medium text-gray-900">${row.nama_user}</div>
-                                    <div class="text-gray-500">NIK: ${row.nik}</div>
+                                    <div class="font-semibold text-[#1A5E63] dark:text-gray-100">${row.nama_user}</div>
+                                    <div class="text-gray-600 dark:text-gray-400">NIK: ${row.nik}</div>
                                 </div>`;
                     }
                 },
@@ -167,10 +171,10 @@ new class extends Component {
                     render: function(data, type, row) {
                         return `<button
                                     type="button"
-                                    class="btn-delete inline-flex items-center px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-md transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                                    class="btn-delete inline-flex items-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 shadow-md hover:shadow-lg"
                                     data-no-tractor="${row.no_tractor}"
                                     data-id-tractor="${row.id_tractor}">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                     </svg>
                                     Delete
@@ -183,36 +187,41 @@ new class extends Component {
             pageLength: 25,
             lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Semua"]],
             order: [], // Keep array order from database (newest first)
+            ordering: true, // Allow sorting but don't apply initial sort
             columnDefs: [
                 {
                     orderable: false,
                     targets: [3, 5] // Disable sorting for Foto and Action columns
                 },
                 {
-                    width: '10%',
-                    targets: 0 // No Tractor
+                    width: '12%',
+                    targets: 0, // No Tractor
+                    className: 'px-6 py-4 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700'
                 },
                 {
                     width: '15%',
-                    targets: 1 // ID Tractor
+                    targets: 1, // ID Tractor
+                    className: 'px-6 py-4 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700'
                 },
                 {
-                    width: '20%',
-                    targets: 2 // Keterangan
+                    width: '18%',
+                    targets: 2, // Keterangan
+                    className: 'px-6 py-4 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700'
                 },
                 {
-                    width: '30%',
+                    width: '25%',
                     targets: 3, // Foto Tractor
-                    className: 'text-center'
+                    className: 'px-6 py-4 text-center bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700'
                 },
                 {
-                    width: '15%',
-                    targets: 4 // User Upload / NIK
+                    width: '18%',
+                    targets: 4, // User Upload / NIK
+                    className: 'px-6 py-4 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700'
                 },
                 {
-                    width: '10%',
+                    width: '12%',
                     targets: 5, // Action
-                    className: 'text-center'
+                    className: 'px-6 py-4 text-center bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700'
                 }
             ],
             language: {
@@ -233,12 +242,17 @@ new class extends Component {
                 }
             },
             drawCallback: function() {
-                // Apply Tailwind classes to DataTables elements
-                $('.dataTables_wrapper').addClass('px-4 pb-4');
-                $('.dataTables_filter input').addClass('ml-2 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent');
-                $('.dataTables_length select').addClass('px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent');
-                $('.dataTables_paginate .paginate_button').addClass('px-3 py-1 mx-1 border border-gray-300 rounded hover:bg-gray-100');
-                $('.dataTables_paginate .paginate_button.current').addClass('bg-blue-500 text-white border-blue-500 hover:bg-blue-600');
+                // Apply Tailwind classes to DataTables elements matching parent theme
+                $('.dataTables_wrapper').addClass('px-6 pb-6');
+                $('.dataTables_filter input').addClass('ml-2 px-4 py-2 border-2 border-[#ADC698] dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1A5E63] focus:border-[#1A5E63] dark:focus:ring-blue-500 dark:focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100');
+                $('.dataTables_length select').addClass('px-4 py-2 border-2 border-[#ADC698] dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1A5E63] focus:border-[#1A5E63] dark:focus:ring-blue-500 dark:focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100');
+                $('.dataTables_paginate .paginate_button').addClass('px-4 py-2 mx-1 border-2 border-[#ADC698] dark:border-gray-600 rounded-lg hover:bg-[#ADC698] dark:hover:bg-gray-600 text-[#1A5E63] dark:text-gray-300 font-medium transition-colors');
+                $('.dataTables_paginate .paginate_button.current').addClass('bg-[#1A5E63] dark:bg-blue-600 text-white border-[#1A5E63] dark:border-blue-600 hover:bg-[#0F4C51] dark:hover:bg-blue-700 shadow-md');
+
+
+                $('.dataTables_info').addClass('text-[#1A5E63] dark:text-gray-300 font-medium');
+                $('.dataTables_filter label').addClass('text-[#1A5E63] dark:text-gray-300 font-medium');
+                $('.dataTables_length label').addClass('text-[#1A5E63] dark:text-gray-300 font-medium');
             }
         };
 
@@ -348,6 +362,50 @@ new class extends Component {
 
 @assets
     <link href="{{asset('js/DataTables/datatables.css')}}" rel="stylesheet" type="text/css" />
+    <style>
+        /* Custom DataTable styling to match parent theme */
+        #tractorTable tbody tr {
+            background-color: #fff !important;
+            border-bottom: 1px solid #e5e7eb !important;
+            transition: background-color 0.2s ease;
+        }
+
+        #tractorTable tbody tr:nth-child(even) {
+            background-color: #f9fafb !important;
+        }
+
+        #tractorTable tbody tr:hover {
+            background-color: #f0f9ff !important;
+        }
+
+        /* Dark mode styles */
+        .dark #tractorTable tbody tr {
+            background-color: #1f2937 !important;
+            border-bottom: 1px solid #374151 !important;
+        }
+
+        .dark #tractorTable tbody tr:nth-child(even) {
+            background-color: #111827 !important;
+        }
+
+        .dark #tractorTable tbody tr:hover {
+            background-color: #1e3a8a !important;
+        }
+
+        /* DataTables controls styling */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            margin: 0 2px !important;
+        }
+
+        .dataTables_wrapper .dataTables_info {
+            margin-top: 1rem !important;
+        }
+
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 1rem !important;
+        }
+    </style>
 @endassets
 
 @pushonce('scripts')
