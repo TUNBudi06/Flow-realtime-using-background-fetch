@@ -5,4 +5,15 @@
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    
+    /* Brand Pink Color Palette */
+    --color-brand-pink-50: #fdf2f8;
+    --color-brand-pink-100: #fce8f4;
+    --color-brand-pink-200: #fce8f4;
+    --color-brand-pink-300: #f9a9d5;
+    --color-brand-pink-400: #f9a9d5;
+    --color-brand-pink-500: #f471b5;
+    --color-brand-pink-600: #f471b5;
+    --color-brand-pink-700: #ec4699;
+    --color-brand-pink-800: #ec4699;
 }

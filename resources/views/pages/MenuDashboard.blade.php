@@ -11,24 +11,24 @@
             <p class="text-gray-600 dark:text-gray-400 mt-2">Production Management System</p>
         </div>
 
-        <div class="bg-[#D0E3C4] dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <div class="bg-brand-pink-100 dark:bg-gray-800 rounded-lg shadow-md p-6">
             <div class="mb-4">
                 <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Overview</h2>
             </div>
 
             <!-- Content here -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-[#ADC698]  dark:bg-blue-900 p-4 rounded-lg">
-                    <h3 class="text-lg font-medium text-[#1A5E63] dark:text-blue-100">MainLine</h3>
-                    <p id="mainline-count" class="text-3xl font-bold text-[#1A5E63] dark:text-blue-300 mx-auto mt-2">125</p>
+                <div class="bg-brand-pink-300 dark:bg-brand-pink-800 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium text-brand-pink-800 dark:text-brand-pink-100">MainLine</h3>
+                    <p id="mainline-count" class="text-3xl font-bold text-brand-pink-700 dark:text-brand-pink-300 mx-auto mt-2">125</p>
                 </div>
-                <div class="bg-green-50 dark:bg-green-900 p-4 rounded-lg">
-                    <h3 class="text-lg font-medium text-green-900 dark:text-green-100">Inspection</h3>
-                    <p id="inspeksi-count" class="text-3xl font-bold text-green-600 dark:text-green-300 mt-2">98</p>
+                <div class="bg-brand-pink-200 dark:bg-brand-pink-700 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium text-brand-pink-800 dark:text-brand-pink-100">Inspection</h3>
+                    <p id="inspeksi-count" class="text-3xl font-bold text-brand-pink-700 dark:text-brand-pink-300 mt-2">98</p>
                 </div>
-                <div class="bg-yellow-50 dark:bg-yellow-900 p-4 rounded-lg">
-                    <h3 class="text-lg font-medium text-yellow-900 dark:text-yellow-100">Delivery</h3>
-                    <p id="delivery-count" class="text-3xl font-bold text-yellow-600 dark:text-yellow-300 mt-2">27</p>
+                <div class="bg-brand-pink-200 dark:bg-brand-pink-700 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium text-brand-pink-800 dark:text-brand-pink-100">Delivery</h3>
+                    <p id="delivery-count" class="text-3xl font-bold text-brand-pink-700 dark:text-brand-pink-300 mt-2">27</p>
                 </div>
             </div>
         </div>

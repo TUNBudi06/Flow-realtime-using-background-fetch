@@ -116,7 +116,7 @@ new class extends Component {
                 {
                     data: 'no_tractor',
                     render: function(data, type, row) {
-                        return `<span class="text-sm font-semibold text-[#1A5E63] dark:text-gray-100">${data}</span>`;
+                        return `<span class="text-sm font-semibold text-brand-pink-700 dark:text-gray-100">${data}</span>`;
                     }
                 },
                 // Column 1: ID Tractor
@@ -149,7 +149,7 @@ new class extends Component {
                             <div class="flex items-center justify-center">
                                 <img src="${data}"
                                      alt="Foto Tractor ${row.no_tractor || ''}"
-                                     class="h-48 w-96 object-cover rounded-lg border-2 border-[#ADC698] dark:border-gray-600 hover:border-[#1A5E63] dark:hover:border-gray-400 transition-all cursor-pointer shadow-md"
+                                     class="h-48 w-96 object-cover rounded-lg border-2 border-brand-pink-300 dark:border-gray-600 hover:border-brand-pink-700 dark:hover:border-gray-400 transition-all cursor-pointer shadow-md"
                                      onclick="window.open(this.src, '_blank')">
                             </div>
                         `;
@@ -160,7 +160,7 @@ new class extends Component {
                     data: null,
                     render: function(data, type, row) {
                         return `<div class="text-sm">
-                                    <div class="font-semibold text-[#1A5E63] dark:text-gray-100">${row.nama_user}</div>
+                                    <div class="font-semibold text-brand-pink-700 dark:text-gray-100">${row.nama_user}</div>
                                     <div class="text-gray-600 dark:text-gray-400">NIK: ${row.nik}</div>
                                 </div>`;
                     }
@@ -244,15 +244,15 @@ new class extends Component {
             drawCallback: function() {
                 // Apply Tailwind classes to DataTables elements matching parent theme
                 $('.dataTables_wrapper').addClass('px-6 pb-6');
-                $('.dataTables_filter input').addClass('ml-2 px-4 py-2 border-2 border-[#ADC698] dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1A5E63] focus:border-[#1A5E63] dark:focus:ring-blue-500 dark:focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100');
-                $('.dataTables_length select').addClass('px-4 py-2 border-2 border-[#ADC698] dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1A5E63] focus:border-[#1A5E63] dark:focus:ring-blue-500 dark:focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100');
-                $('.dataTables_paginate .paginate_button').addClass('px-4 py-2 mx-1 border-2 border-[#ADC698] dark:border-gray-600 rounded-lg hover:bg-[#ADC698] dark:hover:bg-gray-600 text-[#1A5E63] dark:text-gray-300 font-medium transition-colors');
-                $('.dataTables_paginate .paginate_button.current').addClass('bg-[#1A5E63] dark:bg-blue-600 text-white border-[#1A5E63] dark:border-blue-600 hover:bg-[#0F4C51] dark:hover:bg-blue-700 shadow-md');
+                $('.dataTables_filter input').addClass('ml-2 px-4 py-2 border-2 border-brand-pink-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-pink-700 focus:border-brand-pink-700 dark:focus:ring-brand-pink-500 dark:focus:border-brand-pink-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100');
+                $('.dataTables_length select').addClass('px-4 py-2 border-2 border-brand-pink-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-pink-700 focus:border-brand-pink-700 dark:focus:ring-brand-pink-500 dark:focus:border-brand-pink-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100');
+                $('.dataTables_paginate .paginate_button').addClass('px-4 py-2 mx-1 border-2 border-brand-pink-300 dark:border-gray-600 rounded-lg hover:bg-brand-pink-300 dark:hover:bg-gray-600 text-brand-pink-700 dark:text-gray-300 font-medium transition-colors');
+                $('.dataTables_paginate .paginate_button.current').addClass('bg-brand-pink-700 dark:bg-brand-pink-600 text-white border-brand-pink-700 dark:border-brand-pink-600 hover:bg-brand-pink-800 dark:hover:bg-brand-pink-700 shadow-md');
 
 
-                $('.dataTables_info').addClass('text-[#1A5E63] dark:text-gray-300 font-medium');
-                $('.dataTables_filter label').addClass('text-[#1A5E63] dark:text-gray-300 font-medium');
-                $('.dataTables_length label').addClass('text-[#1A5E63] dark:text-gray-300 font-medium');
+                $('.dataTables_info').addClass('text-brand-pink-700 dark:text-gray-300 font-medium');
+                $('.dataTables_filter label').addClass('text-brand-pink-700 dark:text-gray-300 font-medium');
+                $('.dataTables_length label').addClass('text-brand-pink-700 dark:text-gray-300 font-medium');
             }
         };
 

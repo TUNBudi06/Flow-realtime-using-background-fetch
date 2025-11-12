@@ -6,7 +6,7 @@
 @endsection
 
 @section('content')
-    <div class="backdrop-grayscale-50 h-screen w-full relative flex items-center bg-radial-[at_50%_25%] from-sky-300 to-black h-20">
+    <div class="backdrop-grayscale-50 h-screen w-full relative flex items-center bg-gradient-to-b from-brand-pink-300 to-brand-pink-800 h-20">
         <livewire:auth.loginlogic />
     </div>
 @endsection
