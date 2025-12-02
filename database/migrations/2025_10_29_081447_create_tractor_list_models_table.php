@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('image');
             $table->string('name');
             $table->string('nik');
-            $table->enum('prod_type',['inspeksi','delivery','mainline'])->default('mainline');
+            $table->enum('prod_type', ['inspeksi', 'delivery', 'mainline'])->default('mainline');
             $table->boolean('alarm_status')->default(false);
             $table->timestamps();
         });
