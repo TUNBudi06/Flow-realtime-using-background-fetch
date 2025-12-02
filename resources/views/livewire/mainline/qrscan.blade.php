@@ -1,16 +1,19 @@
 <?php
 
-use App\Models\TractorListModel;
+use App\Application\Tractor\Commands\RegisterTractorCommand;
+use App\Infrastructure\Bus\CommandBusInterface;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 use Livewire\WithFileUploads;
-use Livewire\Attributes\Validate;
 
-new class extends Component {
+new class extends Component
+{
     use WithFileUploads;
 
     public $isScanning = false;
+
     public $qrImageFile = null; // For QR code file upload
 
     // Form fields
@@ -25,7 +28,9 @@ new class extends Component {
 
     // Hidden fields (not in form HTML, handled by backend)
     public $keterangan = '';
+
     public $nama_user = '';
+
     public $nik = '';
 
     public function mount()
@@ -40,9 +45,9 @@ new class extends Component {
     #[On('detectQrCode')]
     public function detectQrCode($data): void
     {
-        Debugbar::info('QR Code Detected: ' . $data);
+        Debugbar::info('QR Code Detected: '.$data);
 
-//        data looks "6576;20251023;SF225GWZRE42S;100003;SF225S100003;SF225GWZRE42S100003"
+        //        data looks "6576;20251023;SF225GWZRE42S;100003;SF225S100003;SF225GWZRE42S100003"
 
         // Parse QR code data (assuming JSON format)
         $parts = explode(';', $data);
@@ -50,6 +55,7 @@ new class extends Component {
             Debugbar::warning('Invalid QR code data format');
             $this->dispatch('stopScanning');
             $this->isScanning = false;
+
             return;
         }
 
@@ -98,20 +104,22 @@ new class extends Component {
             $fotoPath = $this->foto->store('tractors', 'public');
         }
 
-        TractorListModel::create([
-            'No'=>$this->no_tractor,
-            'Model'=>$this->id_tractor,
-            'Keterangan'=>$this->keterangan,
-            'image' => $fotoPath,
-            'name' => $this->nama_user,
-            'nik' => $this->nik,
-            'alarm_status' => true,
-            'prod_type' => 'mainline'
-        ]);
+        // Use CQRS Command to register tractor
+        $commandBus = app(CommandBusInterface::class);
+        $command = new RegisterTractorCommand(
+            number: $this->no_tractor,
+            model: $this->id_tractor,
+            imagePath: $fotoPath,
+            userName: $this->nama_user,
+            userNik: $this->nik,
+            productionType: 'mainline'
+        );
+
+        $commandBus->dispatch($command);
 
         $this->dispatch('notify', [
             'type' => 'success',
-            'message' => 'Tractor data saved successfully!'
+            'message' => 'Tractor data saved successfully!',
         ]);
 
         // Reset form

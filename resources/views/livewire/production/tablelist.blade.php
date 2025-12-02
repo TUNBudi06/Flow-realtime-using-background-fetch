@@ -1,10 +1,20 @@
 <?php
 
+use App\Application\Tractor\Commands\DeleteTractorCommand;
+use App\Application\Tractor\Commands\DisableAlarmCommand;
+use App\Application\Tractor\Queries\GetAllTractorsQuery;
+use App\Application\Tractor\Queries\GetTractorCountByTypeQuery;
+use App\Application\Tractor\Queries\GetTractorsWithActiveAlarmQuery;
+use App\Domain\Tractor\ValueObjects\ProductionType;
+use App\Infrastructure\Bus\CommandBusInterface;
+use App\Infrastructure\Bus\QueryBusInterface;
 use Livewire\Volt\Component;
 
-new class extends Component {
+new class extends Component
+{
     public $dataTractor = null;
-    public $countTractor = [0,0,0];
+
+    public $countTractor = [0, 0, 0];
 
     public function mount()
     {
@@ -13,57 +23,56 @@ new class extends Component {
 
     public function loadData()
     {
-        // Reset counter before counting
-        $this->countTractor = [0,0,0];
+        $queryBus = app(QueryBusInterface::class);
 
-        $tractors = \App\Models\TractorListModel::orderBy('created_at','desc')->get();
+        // Get all tractors using CQRS Query
+        $tractors = $queryBus->ask(new GetAllTractorsQuery);
 
-        $this->dataTractor = $tractors->map(function ($tractor, $index) {
-            if($tractor->prod_type == 'mainline'){
-                $this->countTractor[0]++;
-            } elseif($tractor->prod_type == 'delivery'){
-                $this->countTractor[1]++;
-            } elseif($tractor->prod_type == 'inspeksi'){
-                $this->countTractor[2]++;
-            }
+        // Get counts by type using CQRS Query
+        $counts = $queryBus->ask(new GetTractorCountByTypeQuery);
+        $this->countTractor = [
+            $counts[ProductionType::MAINLINE],
+            $counts[ProductionType::DELIVERY],
+            $counts[ProductionType::INSPEKSI],
+        ];
 
+        $this->dataTractor = array_values(array_map(function ($tractor, $index) {
             return [
-                'no_tractor' => $tractor->No,
-                'id_tractor' => $tractor->Model,
-                'keterangan' => $tractor->Keterangan,
-                'foto' => $tractor->image,
-                'nama_user' => $tractor->name,
-                'nik' => $tractor->nik,
-                'alarm' => $tractor->alarm_status,
-                'prod_type' => $tractor->prod_type,
-                'created_at' => $tractor->created_at->format('Y-m-d H:i:s'),
-                'updated_at' => $tractor->updated_at->format('Y-m-d H:i:s'),
-                'sort_order' => $index, // Preserve array order
+                'no_tractor' => $tractor->number()->value(),
+                'id_tractor' => $tractor->model()->value(),
+                'keterangan' => $tractor->description(),
+                'foto' => $tractor->imagePath(),
+                'nama_user' => $tractor->userInfo()->name(),
+                'nik' => $tractor->userInfo()->nik(),
+                'alarm' => $tractor->alarmStatus(),
+                'prod_type' => $tractor->productionType()->value(),
+                'created_at' => $tractor->createdAt()->format('Y-m-d H:i:s'),
+                'updated_at' => $tractor->updatedAt()->format('Y-m-d H:i:s'),
+                'sort_order' => $index,
             ];
-        })->values()->toArray(); // Use values() to reset array keys
+        }, $tractors, array_keys($tractors)));
     }
 
     public function refreshData()
     {
-        $tractorsWithAlarm = \App\Models\TractorListModel::where('alarm_status', true)->get();
+        $queryBus = app(QueryBusInterface::class);
+        $commandBus = app(CommandBusInterface::class);
+
+        // Get tractors with active alarm using CQRS Query
+        $tractorsWithAlarm = $queryBus->ask(new GetTractorsWithActiveAlarmQuery);
 
         foreach ($tractorsWithAlarm as $tractor) {
-            $prodType = $tractor->prod_type ?? 'unknown';
-
-            $prodTypeDisplay = match($prodType) {
-                'mainline' => 'Mainline',
-                'inspeksi' => 'Inspeksi',
-                'delivery' => 'Delivery',
-                default => ucfirst($prodType)
-            };
+            $prodTypeDisplay = $tractor->productionType()->displayName();
 
             $this->dispatch('notify', [
                 'type' => 'success',
-                'message' => "Tractor No {$tractor->No} telah discan dari {$prodTypeDisplay}"
+                'message' => "Tractor No {$tractor->number()->value()} telah discan dari {$prodTypeDisplay}",
             ]);
 
-            $tractor->alarm_status = false;
-            $tractor->save();
+            // Disable alarm using CQRS Command
+            if ($tractor->id() !== null) {
+                $commandBus->dispatch(new DisableAlarmCommand($tractor->id()));
+            }
         }
 
         $this->loadData();
@@ -72,36 +81,35 @@ new class extends Component {
     public function deleteTractor($tractorId)
     {
         try {
-            $tractor = \App\Models\TractorListModel::where('Model', $tractorId)->first();
+            $commandBus = app(CommandBusInterface::class);
 
-            if ($tractor) {
-                $tractor->delete();
-                $this->loadData();
+            // Delete tractor using CQRS Command
+            $commandBus->dispatch(new DeleteTractorCommand(model: $tractorId));
 
-                $this->dispatch('notify', [
-                    'type' => 'success',
-                    'message' => 'Tractor berhasil dihapus!'
-                ]);
-
-                return true;
-            }
+            $this->loadData();
 
             $this->dispatch('notify', [
+                'type' => 'success',
+                'message' => 'Tractor berhasil dihapus!',
+            ]);
+
+            return true;
+        } catch (\RuntimeException $e) {
+            $this->dispatch('notify', [
                 'type' => 'error',
-                'message' => 'Tractor tidak ditemukan!'
+                'message' => 'Tractor tidak ditemukan!',
             ]);
 
             return false;
         } catch (\Exception $e) {
             $this->dispatch('notify', [
                 'type' => 'error',
-                'message' => 'Gagal menghapus tractor: ' . $e->getMessage()
+                'message' => 'Gagal menghapus tractor: '.$e->getMessage(),
             ]);
 
             return false;
         }
     }
-
 }; ?>
 <div></div>
 @script

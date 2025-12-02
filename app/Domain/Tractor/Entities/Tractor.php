@@ -178,4 +178,17 @@ final class Tractor
             $this->productionType->displayName()
         );
     }
+
+    public static function buildDescription(
+        TractorNumber $number,
+        TractorModel $model,
+        ProductionType $productionType
+    ): string {
+        return sprintf(
+            'Tractor No %s dengan kode %s telah keluar dari %s',
+            $number->value(),
+            $model->value(),
+            $productionType->displayName()
+        );
+    }
 }

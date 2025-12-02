@@ -20,30 +20,23 @@ final readonly class RegisterTractorHandler
 
     public function handle(RegisterTractorCommand $command): Tractor
     {
+        $number = TractorNumber::create($command->number);
+        $model = TractorModel::create($command->model);
+        $productionType = ProductionType::fromString($command->productionType);
+
+        // Generate description from parameters
+        $description = Tractor::buildDescription($number, $model, $productionType);
+
         $tractor = Tractor::create(
-            number: TractorNumber::create($command->number),
-            model: TractorModel::create($command->model),
-            description: '',
-            imagePath: $command->imagePath,
-            userInfo: UserInfo::create($command->userName, $command->userNik),
-            productionType: ProductionType::fromString($command->productionType),
-            alarmStatus: true
-        );
-
-        // Generate description after entity is created
-        $description = $tractor->generateDescription();
-
-        // Create new tractor with description
-        $tractorWithDescription = Tractor::create(
-            number: TractorNumber::create($command->number),
-            model: TractorModel::create($command->model),
+            number: $number,
+            model: $model,
             description: $description,
             imagePath: $command->imagePath,
             userInfo: UserInfo::create($command->userName, $command->userNik),
-            productionType: ProductionType::fromString($command->productionType),
+            productionType: $productionType,
             alarmStatus: true
         );
 
-        return $this->repository->save($tractorWithDescription);
+        return $this->repository->save($tractor);
     }
 }
